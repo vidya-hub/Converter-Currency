@@ -1,28 +1,11 @@
 import 'package:converter/components/bodyhome.dart';
 import 'package:converter/main.dart';
+import 'package:converter/utils/utilsclass.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  getDate() {
-    var dt = DateTime.now();
-    var newFormat = DateFormat("dd/MM/y H:m");
-    String updatedDt = newFormat.format(dt);
-    return updatedDt;
-  }
-
-  String datetime = "";
-  @override
-  void initState() {
-    super.initState();
-    datetime = getDate().toString();
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -37,7 +20,13 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text("last refresh $datetime", style: TextStyle(fontSize: 14))
+                  Consumer<Getdata>(
+                    builder: (BuildContext context, value, Widget child) {
+                      // String data = value.;
+                      return Text("last refresh ${value.datetime}",
+                          style: TextStyle(fontSize: 14));
+                    },
+                  )
                 ],
               )
             ],
@@ -46,17 +35,15 @@ class _HomePageState extends State<HomePage> {
         actions: [
           RaisedButton(
             onPressed: () {
-              setState(() {
-                datetime = getDate().toString();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MyApp();
-                    },
-                  ),
-                );
-              });
+              Provider.of<Getdata>(context, listen: false).getDate();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MyApp();
+                  },
+                ),
+              );
             },
             child: Text("Refresh"),
             shape: RoundedRectangleBorder(
